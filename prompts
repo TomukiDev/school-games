@@ -1,0 +1,13 @@
+Crea una applicazione che permetta ai bambini di imparare le tabelline, tramite un meccanismo di gamification ed engagement. 
+
+In ogni partita il software mostra una sequenza di operazioni (es. "4 x 5") e per ogni operazione presenta 3 possibili risposte, una sola delle quali è corretta (es 20 24 16). 
+Il giocatore deve cliccare sulla risposta corretta entro un certo tempo. Il tempo disponibile viene mostrato in un angolo della pagina come "conto alla rovescia". 
+Se il giocatore indovina la risposta, accumula punti. Se il giocatore sbaglia la risposta o se finisce il tempo, non accumula punti. 
+
+Ogni "livello" prevede 10 operazioni, al termine delle quali si passa al livello successivo mostrando un messaggio "LIVELLO SUCCESSIVO!" se sono state date almeno 6 risposte corrette, altrimenti viene mostrato un messaggio "RIPROVA" e deve essere ripetuto il livello corrente.
+
+L'applicazione si apre con una una pagina di avvio del gioco, nella quale il giocatore può scegliere su quali tabelline si concentra la partita, tramite 10 checkbox ("Tabellina del 1", "Tabellina del 2", fino a "Tabellina del 10"). Le operazioni mostrate si concentreranno solo sulle tabelline selezionate.
+--------------
+
+Ad ogni operazione va associato un tasso di difficoltà, su una scala da 1 a 10.
+Deve essere prevista una matrice di configurazione della difficoltà delle operazioni, in modo tale da poter 
