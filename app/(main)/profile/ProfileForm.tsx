@@ -176,15 +176,6 @@ export default function ProfileForm({
         </button>
         </form>
 
-{/*
-      <button
-        type="button"
-        onClick={signOut}
-        className="min-h-11 w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-900"
-      >
-        Esci
-      </button>
-*/}
     </div>
   );
 }
