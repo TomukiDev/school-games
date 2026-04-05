@@ -161,10 +161,10 @@ function GamePageInner() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-sky-100 via-rose-100 to-amber-100 dark:bg-black">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-sky-100 via-rose-100 to-amber-100 text-zinc-900 [color-scheme:light]">
       <header className="flex w-full max-w-3xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6">
         <button
-          className="min-h-11 w-fit shrink-0 text-left text-sm text-sky-700 hover:underline dark:text-zinc-400"
+          className="min-h-11 w-fit shrink-0 text-left text-sm text-sky-800 hover:underline"
           onClick={() => router.push("/")}
           type="button"
         >
@@ -192,7 +192,7 @@ function GamePageInner() {
       <main className="w-full max-w-3xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {mode === "playing" && (
           <div className="relative flex flex-col items-center gap-6 sm:gap-8">
-            <div className="mt-4 text-4xl font-extrabold text-fuchsia-700 drop-shadow-sm sm:mt-8 sm:text-5xl">
+            <div className="mt-4 text-4xl font-extrabold text-fuchsia-800 drop-shadow-sm sm:mt-8 sm:text-5xl">
               {question.a} × {question.b}
             </div>
             <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
@@ -201,7 +201,7 @@ function GamePageInner() {
                 const showFeedback = lastWasCorrect !== null;
                 const bg =
                   showFeedback && isCorrect
-                    ? "bg-emerald-200 border-emerald-400"
+                    ? "bg-emerald-200 border-emerald-500"
                     : showFeedback && !isCorrect
                       ? "opacity-60"
                       : "hover:scale-[1.02] transition-transform";
@@ -211,7 +211,7 @@ function GamePageInner() {
                   <button
                     key={opt}
                     onClick={() => handleAnswer(opt)}
-                    className={`min-h-[52px] w-full rounded-2xl border-2 px-4 py-5 text-2xl font-extrabold sm:px-6 sm:py-6 sm:text-3xl ${bg} ${colorClass}`}
+                    className={`min-h-[52px] w-full rounded-2xl border-2 px-4 py-5 text-2xl font-extrabold text-zinc-900 sm:px-6 sm:py-6 sm:text-3xl ${bg} ${colorClass}`}
                     disabled={lastWasCorrect !== null}
                     type="button"
                   >
@@ -225,15 +225,15 @@ function GamePageInner() {
                 <div
                   className={`max-w-sm rounded-2xl border-2 px-6 py-5 text-center shadow-lg sm:px-8 sm:py-6 ${
                     lastWasCorrect
-                      ? "border-emerald-300 bg-emerald-100 text-emerald-900"
-                      : "border-rose-300 bg-rose-100 text-rose-900"
+                      ? "border-emerald-400 bg-emerald-100 text-emerald-950"
+                      : "border-rose-400 bg-rose-100 text-rose-950"
                   }`}
                 >
                   <div className="text-3xl font-extrabold sm:text-5xl">
                     {lastWasCorrect ? "🎉 Corretto!" : "😅 Peccato!"}
                   </div>
                   {lastWasCorrect && feedbackPoints !== null && feedbackPoints > 0 && (
-                    <div className="mt-2 text-xl font-bold text-emerald-700 sm:text-2xl">
+                    <div className="mt-2 text-xl font-bold text-emerald-800 sm:text-2xl">
                       +{feedbackPoints} punti
                     </div>
                   )}
@@ -245,10 +245,10 @@ function GamePageInner() {
 
         {mode === "levelEnd" && (
           <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
-            <h2 className="text-center text-3xl font-extrabold text-emerald-700 sm:text-4xl">
+            <h2 className="text-center text-3xl font-extrabold text-emerald-800 sm:text-4xl">
               Livello superato! 🎯
             </h2>
-            <p className="text-center text-zinc-700 dark:text-zinc-300">
+            <p className="text-center text-zinc-800">
               Risposte corrette: {correctCount}/{QUESTIONS_PER_LEVEL} • Punteggio: {score}
             </p>
             <button
@@ -264,8 +264,8 @@ function GamePageInner() {
 
         {mode === "gameOver" && (
           <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
-            <h2 className="text-center text-3xl font-extrabold text-rose-700 sm:text-4xl">Game Over 💫</h2>
-            <p className="max-w-md text-center text-zinc-700 dark:text-zinc-300">
+            <h2 className="text-center text-3xl font-extrabold text-rose-800 sm:text-4xl">Game Over 💫</h2>
+            <p className="max-w-md text-center text-zinc-800">
               Hai risposto correttamente a {correctCount} su {QUESTIONS_PER_LEVEL}. Servono almeno {PASS_THRESHOLD}{" "}
               per passare.
             </p>
@@ -280,7 +280,7 @@ function GamePageInner() {
               </button>
               <button
                 onClick={() => router.push("/games/tabelline")}
-                className="min-h-11 rounded-full border border-zinc-300 bg-white px-8 py-3 font-semibold dark:border-zinc-700 dark:bg-zinc-900"
+                className="min-h-11 rounded-full border border-zinc-400 bg-white px-8 py-3 font-semibold text-zinc-900"
                 type="button"
               >
                 Cambia tabelline
@@ -297,8 +297,8 @@ export default function GamePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-100 to-amber-100 dark:bg-black">
-          <p className="text-zinc-600 dark:text-zinc-400">Caricamento…</p>
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-100 to-amber-100 text-zinc-900 [color-scheme:light]">
+          <p className="text-zinc-700">Caricamento…</p>
         </div>
       }
     >
