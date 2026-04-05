@@ -5,11 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { authErrorMessage } from "@/lib/auth-errors";
-
-const OAUTH_PROVIDERS: { id: Provider; label: string }[] = [
-  { id: "google", label: "Google" },
-  { id: "facebook", label: "Facebook" },
-];
+import { FacebookFIcon, GoogleGIcon } from "./oauth-icons";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -92,17 +88,26 @@ export default function LoginForm() {
       </p>
 
       <div className="mt-6 flex flex-col gap-2">
-        {OAUTH_PROVIDERS.map(({ id, label }) => (
-          <button
-            key={id}
-            type="button"
-            disabled={loading}
-            onClick={() => oauth(id)}
-            className="min-h-11 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 py-2.5 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
-          >
-            Continua con {label}
-          </button>
-        ))}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => oauth("google")}
+          aria-label="Continua con Google"
+          className="flex min-h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[#747775] bg-white px-3 py-2.5 text-sm font-medium text-[#1F1F1F] transition hover:bg-zinc-50 disabled:opacity-50 dark:border-[#8E918F] dark:bg-[#131314] dark:text-[#E3E3E3] dark:hover:bg-zinc-900"
+        >
+          <GoogleGIcon className="h-5 w-5 shrink-0" />
+          <span>Continua con Google</span>
+        </button>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => oauth("facebook")}
+          aria-label="Continua con Facebook"
+          className="flex min-h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-[#1877F2] px-3 py-2.5 text-sm font-medium text-white transition hover:bg-[#166fe5] disabled:opacity-50"
+        >
+          <FacebookFIcon className="h-5 w-5 shrink-0 text-white" />
+          <span>Continua con Facebook</span>
+        </button>
       </div>
 
       <div className="relative my-8">
