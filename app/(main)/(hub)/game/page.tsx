@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPointsFor } from "@/lib/difficulty";
 
@@ -32,7 +33,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 function generateQuestion(allowedTables: number[]): Question {
   const a = allowedTables[Math.floor(Math.random() * allowedTables.length)];
-  const b = Math.floor(Math.random() * 10) + 1; // 1..10
+  const b = Math.floor(Math.random() * 10) + 1;
   const correct = a * b;
 
   const deltas = [1, 2, -1, -2, 3, -3];
@@ -42,13 +43,12 @@ function generateQuestion(allowedTables: number[]): Question {
   while (wrongs.size < 2 && attempts < 50) {
     attempts++;
     const delta = deltas[Math.floor(Math.random() * deltas.length)];
-    const candidate = correct + delta * a; // keeps relation with table
+    const candidate = correct + delta * a;
     if (candidate > 0 && candidate !== correct) {
       wrongs.add(candidate);
     }
   }
 
-  // Fallback in rare cases
   while (wrongs.size < 2) {
     const candidate = correct + (Math.floor(Math.random() * 9) + 1);
     if (candidate !== correct) wrongs.add(candidate);
@@ -58,7 +58,7 @@ function generateQuestion(allowedTables: number[]): Question {
   return { a, b, correct, options };
 }
 
-export default function GamePage() {
+function GamePageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const tablesParam = params.get("tables") || "";
@@ -81,12 +81,11 @@ export default function GamePage() {
         /* ignore */
       }
     }
-    // default to all if none provided
     return Array.from({ length: 10 }, (_, i) => i + 1);
   }, [tablesParam]);
 
   const [level, setLevel] = useState<number>(1);
-  const [questionIndex, setQuestionIndex] = useState<number>(0); // 0..9
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [question, setQuestion] = useState<Question>(() => generateQuestion(allowedTables));
   const [score, setScore] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
@@ -100,9 +99,8 @@ export default function GamePage() {
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          // time over -> move to next question without points
           nextQuestion(false, 0);
-          return getSecondsForLevel(level); // will be reset anyway in nextQuestion
+          return getSecondsForLevel(level);
         }
         return t - 1;
       });
@@ -120,11 +118,9 @@ export default function GamePage() {
     }
     setTimeout(() => {
       if (questionIndex + 1 >= QUESTIONS_PER_LEVEL) {
-        // end of level
         const passed = (wasCorrect ? correctCount + 1 : correctCount) >= PASS_THRESHOLD;
         setMode(passed ? "levelEnd" : "gameOver");
       } else {
-        // next question
         setQuestionIndex((i) => i + 1);
         setQuestion(generateQuestion(allowedTables));
         setTimeLeft(getSecondsForLevel(level));
@@ -136,7 +132,7 @@ export default function GamePage() {
 
   function handleAnswer(answer: number): void {
     if (mode !== "playing") return;
-    if (lastWasCorrect !== null) return; // prevent double clicks during feedback
+    if (lastWasCorrect !== null) return;
     const isCorrect = answer === question.correct;
     const pts = isCorrect ? getPointsFor(question.a, question.b) : 0;
     nextQuestion(isCorrect, pts);
@@ -165,38 +161,41 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-sky-100 via-rose-100 to-amber-100 dark:bg-black">
-      <header className="w-full max-w-3xl flex items-center justify-between px-6 py-4">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-sky-100 via-rose-100 to-amber-100 dark:bg-black">
+      <header className="flex w-full max-w-3xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6">
         <button
-          className="text-sm text-sky-700 hover:underline dark:text-zinc-400"
+          className="min-h-11 w-fit shrink-0 text-left text-sm text-sky-700 hover:underline dark:text-zinc-400"
           onClick={() => router.push("/")}
           type="button"
         >
-          ← Home
+          ← Menu
         </button>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span className="text-xs sm:text-sm rounded-full px-3 py-1 bg-purple-200 text-purple-900">
-            Livello: <strong>{level}</strong>
+        <div className="flex flex-wrap items-center justify-end gap-2 sm:max-w-[min(100%,20rem)] sm:justify-end md:max-w-none">
+          <span className="inline-flex min-h-9 items-center rounded-full bg-purple-200 px-3 py-1 text-xs text-purple-900 sm:text-sm">
+            Livello: <strong className="ml-1">{level}</strong>
           </span>
-          <span className="text-xs sm:text-sm rounded-full px-3 py-1 bg-emerald-200 text-emerald-900">
-            Punti: <strong>{score}</strong>
+          <span className="inline-flex min-h-9 items-center rounded-full bg-emerald-200 px-3 py-1 text-xs text-emerald-900 sm:text-sm">
+            Punti: <strong className="ml-1">{score}</strong>
           </span>
-          <span className="text-xs sm:text-sm rounded-full px-3 py-1 bg-amber-200 text-amber-900">
-            Domanda: <strong>{questionIndex + 1}/{QUESTIONS_PER_LEVEL}</strong>
+          <span className="inline-flex min-h-9 items-center rounded-full bg-amber-200 px-3 py-1 text-xs text-amber-900 sm:text-sm">
+            Domanda:{" "}
+            <strong className="ml-1">
+              {questionIndex + 1}/{QUESTIONS_PER_LEVEL}
+            </strong>
           </span>
-          <span className="text-xs sm:text-sm rounded-full px-3 py-1 bg-sky-200 text-sky-900">
+          <span className="inline-flex min-h-9 items-center rounded-full bg-sky-200 px-3 py-1 text-xs text-sky-900 sm:text-sm">
             ⏳ {timeLeft}s
           </span>
         </div>
       </header>
 
-      <main className="w-full max-w-3xl flex-1 px-6 py-8">
+      <main className="w-full max-w-3xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {mode === "playing" && (
-          <div className="relative flex flex-col items-center gap-8">
-            <div className="text-5xl font-extrabold mt-8 text-fuchsia-700 drop-shadow-sm">
+          <div className="relative flex flex-col items-center gap-6 sm:gap-8">
+            <div className="mt-4 text-4xl font-extrabold text-fuchsia-700 drop-shadow-sm sm:mt-8 sm:text-5xl">
               {question.a} × {question.b}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
               {question.options.map((opt) => {
                 const isCorrect = opt === question.correct;
                 const showFeedback = lastWasCorrect !== null;
@@ -204,16 +203,17 @@ export default function GamePage() {
                   showFeedback && isCorrect
                     ? "bg-emerald-200 border-emerald-400"
                     : showFeedback && !isCorrect
-                    ? "opacity-60"
-                    : "hover:scale-[1.02] transition-transform";
+                      ? "opacity-60"
+                      : "hover:scale-[1.02] transition-transform";
                 const palette = ["bg-rose-200", "bg-sky-200", "bg-amber-200"] as const;
                 const colorClass = palette[(opt + question.a + question.b) % palette.length];
                 return (
                   <button
                     key={opt}
                     onClick={() => handleAnswer(opt)}
-                    className={`w-full rounded-2xl border-2 px-6 py-6 text-3xl font-extrabold ${bg} ${colorClass}`}
+                    className={`min-h-[52px] w-full rounded-2xl border-2 px-4 py-5 text-2xl font-extrabold sm:px-6 sm:py-6 sm:text-3xl ${bg} ${colorClass}`}
                     disabled={lastWasCorrect !== null}
+                    type="button"
                   >
                     {opt}
                   </button>
@@ -221,19 +221,19 @@ export default function GamePage() {
               })}
             </div>
             {lastWasCorrect !== null && (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center px-2">
                 <div
-                  className={`rounded-2xl px-8 py-6 text-center shadow-lg border-2 ${
+                  className={`max-w-sm rounded-2xl border-2 px-6 py-5 text-center shadow-lg sm:px-8 sm:py-6 ${
                     lastWasCorrect
-                      ? "bg-emerald-100 border-emerald-300 text-emerald-900"
-                      : "bg-rose-100 border-rose-300 text-rose-900"
+                      ? "border-emerald-300 bg-emerald-100 text-emerald-900"
+                      : "border-rose-300 bg-rose-100 text-rose-900"
                   }`}
                 >
-                  <div className="text-4xl sm:text-5xl font-extrabold">
+                  <div className="text-3xl font-extrabold sm:text-5xl">
                     {lastWasCorrect ? "🎉 Corretto!" : "😅 Peccato!"}
                   </div>
                   {lastWasCorrect && feedbackPoints !== null && feedbackPoints > 0 && (
-                    <div className="mt-2 text-2xl font-bold text-emerald-700">
+                    <div className="mt-2 text-xl font-bold text-emerald-700 sm:text-2xl">
                       +{feedbackPoints} punti
                     </div>
                   )}
@@ -244,15 +244,18 @@ export default function GamePage() {
         )}
 
         {mode === "levelEnd" && (
-          <div className="flex flex-col items-center gap-6 pt-16">
-            <h2 className="text-4xl font-extrabold text-emerald-700">Livello superato! 🎯</h2>
-            <p className="text-zinc-700">
+          <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
+            <h2 className="text-center text-3xl font-extrabold text-emerald-700 sm:text-4xl">
+              Livello superato! 🎯
+            </h2>
+            <p className="text-center text-zinc-700 dark:text-zinc-300">
               Risposte corrette: {correctCount}/{QUESTIONS_PER_LEVEL} • Punteggio: {score}
             </p>
             <button
               onClick={proceedToNextLevel}
-              className="rounded-full px-8 py-3 font-semibold text-white"
+              className="min-h-11 rounded-full px-8 py-3 font-semibold text-white"
               style={{ backgroundColor: "#16a34a" }}
+              type="button"
             >
               Prossimo livello
             </button>
@@ -260,22 +263,25 @@ export default function GamePage() {
         )}
 
         {mode === "gameOver" && (
-          <div className="flex flex-col items-center gap-6 pt-16">
-            <h2 className="text-4xl font-extrabold text-rose-700">Game Over 💫</h2>
-            <p className="text-zinc-700">
-              Hai risposto correttamente a {correctCount} su {QUESTIONS_PER_LEVEL}. Servono almeno {PASS_THRESHOLD} per passare.
+          <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
+            <h2 className="text-center text-3xl font-extrabold text-rose-700 sm:text-4xl">Game Over 💫</h2>
+            <p className="max-w-md text-center text-zinc-700 dark:text-zinc-300">
+              Hai risposto correttamente a {correctCount} su {QUESTIONS_PER_LEVEL}. Servono almeno {PASS_THRESHOLD}{" "}
+              per passare.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex w-full max-w-md flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
               <button
                 onClick={restartGame}
-                className="rounded-full px-8 py-3 font-semibold text-white"
+                className="min-h-11 rounded-full px-8 py-3 font-semibold text-white"
                 style={{ backgroundColor: "#2563eb" }}
+                type="button"
               >
                 Riprova
               </button>
               <button
-                onClick={() => router.push("/")}
-                className="rounded-full px-8 py-3 font-semibold border border-zinc-300 dark:border-zinc-700 bg-white"
+                onClick={() => router.push("/games/tabelline")}
+                className="min-h-11 rounded-full border border-zinc-300 bg-white px-8 py-3 font-semibold dark:border-zinc-700 dark:bg-zinc-900"
+                type="button"
               >
                 Cambia tabelline
               </button>
@@ -287,3 +293,16 @@ export default function GamePage() {
   );
 }
 
+export default function GamePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-100 to-amber-100 dark:bg-black">
+          <p className="text-zinc-600 dark:text-zinc-400">Caricamento…</p>
+        </div>
+      }
+    >
+      <GamePageInner />
+    </Suspense>
+  );
+}
