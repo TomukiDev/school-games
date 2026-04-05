@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { signOutClient } from "@/lib/auth/sign-out-client";
 
 type Props = {
   userId: string;
@@ -79,10 +80,7 @@ export default function ProfileForm({
   }
 
   async function signOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
+    await signOutClient(router);
   }
 
   return (
