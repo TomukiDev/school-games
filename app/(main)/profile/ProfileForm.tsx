@@ -79,6 +79,12 @@ export default function ProfileForm({
     }
   }
 
+
+  async function goToMenu() {
+    router.push("/");
+    router.refresh();
+  }
+
   async function signOut() {
     await signOutClient(router);
   }
@@ -94,12 +100,6 @@ export default function ProfileForm({
               : "Aggiorna le informazioni del giocatore."}
           </p>
         </div>
-        <Link
-          href="/"
-          className="min-h-11 shrink-0 rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-900"
-        >
-          Menu
-        </Link>
       </div>
 
       <form
@@ -166,8 +166,17 @@ export default function ProfileForm({
         >
           Salva
         </button>
-      </form>
 
+        <button
+          type="button"
+          onClick={goToMenu}
+          className="min-h-11 w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-900"
+          >
+          Annulla e torna al menu
+        </button>
+        </form>
+
+{/*
       <button
         type="button"
         onClick={signOut}
@@ -175,6 +184,7 @@ export default function ProfileForm({
       >
         Esci
       </button>
+*/}
     </div>
   );
 }
