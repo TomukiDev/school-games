@@ -9,9 +9,6 @@ import { authErrorMessage } from "@/lib/auth-errors";
 const OAUTH_PROVIDERS: { id: Provider; label: string }[] = [
   { id: "google", label: "Google" },
   { id: "facebook", label: "Facebook" },
-  { id: "apple", label: "Apple" },
-  { id: "github", label: "GitHub" },
-  { id: "azure", label: "Microsoft" },
 ];
 
 export default function LoginForm() {
