@@ -84,7 +84,7 @@ export default function LoginForm() {
         Accedi
       </h1>
       <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Usa le tue credenziali oppure registrati.
+        Usa le tue credenziali oppure registrati
       </p>
 {/*}
       <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
