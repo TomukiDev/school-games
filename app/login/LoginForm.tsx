@@ -84,6 +84,10 @@ export default function LoginForm() {
         Accedi
       </h1>
       <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
+        Usa le tue credenziali oppure registrati.
+      </p>
+{/*}
+      <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
         Usa un account social oppure email e password.
       </p>
 
@@ -118,7 +122,7 @@ export default function LoginForm() {
           <span className="bg-white px-2 dark:bg-zinc-950">oppure account locale</span>
         </div>
       </div>
-
+*/}
       <div className="mb-4 flex rounded-lg bg-zinc-100 p-1 dark:bg-zinc-900">
         <button
           type="button"
