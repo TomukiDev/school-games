@@ -1,28 +1,8 @@
--- Esegui nel SQL Editor di Supabase (o con CLI) prima di usare l'app.
 
-create table if not exists public.app (
-  id uuid primary key references auth.users (id) on delete cascade,
-  name text
-);
+-- to create new UUIDS: 
+-- SELECT uuid_in(overlay(overlay(md5(random()::text || ':' || random()::text) placing '4' from 13) placing to_hex(floor(random()*(11-8+1) + 8)::int)::text from 17)::cstring);
 
-create table if not exists public.ranking (
-  id uuid primary key references auth.users (id) on delete cascade,
-  game_id uuid references public.app(uuid),
-  level integer,
-  points integer,
-  updated_at timestamptz not null default now()
-);
 
-alter table public.ranking enable row level security;
-
-create policy "Users can read own ranking"
-  on public.ranking for select
-  using (auth.uid() = id);
-
-create policy "Users can insert own ranking"
-  on public.ranking for insert
-  with check (auth.uid() = id);
-
-create policy "Users can update own ranking"
-  on public.ranking for update
-  using (auth.uid() = id);
+insert into public.app (id, name)
+  values ('6b2a68b9-82a5-4168-88e2-a8f67a40dd56', 'Tabelline')
+  on conflict (id) do nothing;
