@@ -25,6 +25,23 @@ function ProfileCircleIcon() {
   );
 }
 
+function TrophyIcon() {
+  return (
+
+    <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className="h-6 w-6"
+          aria-hidden
+          viewBox="0 0 71.69 122.88">
+      <path 
+        fillRule="evenodd" 
+        clipRule="evenodd" 
+        d="M1.19,0.02h25.91l23.34,42.45c0.5,0.9,1.23,1.61,2.06,2.06H17.66L1.19,0V0.02L1.19,0.02z M35.85,51.19 c19.8,0,35.85,16.05,35.85,35.85s-16.05,35.85-35.85,35.85C16.05,122.88,0,106.83,0,87.03S16.05,51.19,35.85,51.19L35.85,51.19z M35.85,66.34l5.99,14.62l15.77,1.19L45.54,92.39l3.75,15.34L35.85,99.4l-13.44,8.33l3.75-15.34L14.08,82.14l15.77-1.19 L35.85,66.34L35.85,66.34L35.85,66.34z M39.03,0.02h30.32L57.15,33L39.03,0.02L39.03,0.02z"
+      />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg
@@ -32,8 +49,7 @@ function LogoutIcon() {
       viewBox="0 0 24 24"
       fill="currentColor"
       className="h-6 w-6"
-      aria-hidden
-    >
+      aria-hidden>
       <path
         fillRule="evenodd"
         d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
@@ -48,6 +64,9 @@ export default function HubHeaderActions() {
 
   return (
     <div className="flex items-center justify-end gap-2">
+      <Link href="/rankings" className={iconBtnClass} aria-label="Miei punteggi">
+        <TrophyIcon />
+      </Link>
       <Link href="/profile" className={iconBtnClass} aria-label="Apri profilo">
         <ProfileCircleIcon />
       </Link>
