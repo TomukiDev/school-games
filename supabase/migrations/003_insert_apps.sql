@@ -4,5 +4,6 @@
 
 
 insert into public.app (id, name)
-  values ('6b2a68b9-82a5-4168-88e2-a8f67a40dd56', 'Tabelline')
+  values ('6b2a68b9-82a5-4168-88e2-a8f67a40dd56', 'Tabelline', 1)
   on conflict (id) do nothing;
+  

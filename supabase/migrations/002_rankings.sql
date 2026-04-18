@@ -2,8 +2,16 @@
 
 create table if not exists public.app (
   id uuid primary key,
-  name text
+  name text, 
+  priority integer
 );
+
+alter table public.app enable row level security;
+
+create policy "Users can read apps"
+  on public.app for select
+  using (true);
+
 
 create table if not exists public.ranking (
   id uuid primary key references auth.users (id) on delete cascade,
