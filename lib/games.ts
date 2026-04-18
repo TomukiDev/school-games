@@ -14,4 +14,11 @@ export const GAMES: GameTile[] = [
     imageSrc: "/games/tabelline.svg",
     imageAlt: "Illustrazione del gioco Tabelline",
   },
+  {
+    id: "orologio",
+    title: "Che ora è?",
+    href: "/games/orologio",
+    imageSrc: "/games/orologio.svg",
+    imageAlt: "Illustrazione del gioco Che ora è?",
+  },
 ];

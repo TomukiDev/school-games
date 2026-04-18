@@ -14,7 +14,7 @@ export default function HubPage() {
         <h1 className="text-center text-2xl font-bold text-zinc-900 sm:text-3xl dark:text-zinc-50">
           Scegli un gioco
         </h1>
-        <p className="mx-auto mt-2 max-w-md text-center text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mx-auto mt-2 max-w-md text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
           Tocca un&apos;icona per iniziare. Altri giochi arriveranno presto.
         </p>
 
@@ -33,7 +33,9 @@ export default function HubPage() {
                   unoptimized
                   className="h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20"
                 />
-                <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">{game.title}</span>
+                <span className="text-base font-semibold text-zinc-800 sm:text-lg dark:text-zinc-100">
+                  {game.title}
+                </span>
               </Link>
             </li>
           ))}

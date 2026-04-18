@@ -83,7 +83,7 @@ export default function LoginForm() {
       <h1 className="text-center text-2xl font-bold text-zinc-900 dark:text-zinc-50">
         Accedi
       </h1>
-      <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 text-center text-base text-zinc-600 dark:text-zinc-400">
         Usa le tue credenziali oppure registrati
       </p>
 {/*}
@@ -126,7 +126,7 @@ export default function LoginForm() {
       <div className="mb-4 flex rounded-lg bg-zinc-100 p-1 dark:bg-zinc-900">
         <button
           type="button"
-          className={`min-h-10 flex-1 rounded-md text-sm font-medium transition ${
+          className={`min-h-10 flex-1 rounded-md text-base font-medium transition ${
             mode === "signin"
               ? "bg-white text-zinc-900 shadow dark:bg-zinc-800 dark:text-zinc-50"
               : "text-zinc-600 dark:text-zinc-400"
@@ -137,7 +137,7 @@ export default function LoginForm() {
         </button>
         <button
           type="button"
-          className={`min-h-10 flex-1 rounded-md text-sm font-medium transition ${
+          className={`min-h-10 flex-1 rounded-md text-base font-medium transition ${
             mode === "signup"
               ? "bg-white text-zinc-900 shadow dark:bg-zinc-800 dark:text-zinc-50"
               : "text-zinc-600 dark:text-zinc-400"
@@ -150,7 +150,7 @@ export default function LoginForm() {
 
       <form onSubmit={submitLocal} className="flex flex-col gap-4">
         <div>
-          <label htmlFor="login-email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="login-email" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Email
           </label>
           <input
@@ -160,11 +160,11 @@ export default function LoginForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+            className="mt-1 w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
           />
         </div>
         <div>
-          <label htmlFor="login-password" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="login-password" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Password
           </label>
           <input
@@ -175,16 +175,16 @@ export default function LoginForm() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+            className="mt-1 w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
           />
         </div>
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+          <p className="text-base text-red-600 dark:text-red-400" role="alert">
             {error}
           </p>
         )}
         {message && (
-          <p className="text-sm text-emerald-700 dark:text-emerald-400" role="status">
+          <p className="text-base text-emerald-700 dark:text-emerald-400" role="status">
             {message}
           </p>
         )}

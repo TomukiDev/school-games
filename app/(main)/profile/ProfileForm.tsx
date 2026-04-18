@@ -94,7 +94,7 @@ export default function ProfileForm({
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">Profilo</h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-base text-zinc-600 dark:text-zinc-400">
             {setup
               ? "Completa i dati per iniziare a giocare."
               : "Aggiorna le informazioni del giocatore."}
@@ -107,7 +107,7 @@ export default function ProfileForm({
         className="flex flex-col gap-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
       >
         <div>
-          <label htmlFor="full_name" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="full_name" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Nome
           </label>
           <input
@@ -122,7 +122,7 @@ export default function ProfileForm({
         </div>
 
         <div>
-          <label htmlFor="birth_date" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="birth_date" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Data di nascita
           </label>
           <input
@@ -135,7 +135,7 @@ export default function ProfileForm({
         </div>
 
         <div>
-          <label htmlFor="profile-email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="profile-email" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Email
           </label>
           <input
@@ -149,12 +149,12 @@ export default function ProfileForm({
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+          <p className="text-base text-red-600 dark:text-red-400" role="alert">
             {error}
           </p>
         )}
         {status && (
-          <p className="text-sm text-emerald-700 dark:text-emerald-400" role="status">
+          <p className="text-base text-emerald-700 dark:text-emerald-400" role="status">
             {status}
           </p>
         )}
@@ -170,7 +170,7 @@ export default function ProfileForm({
         <button
           type="button"
           onClick={goToMenu}
-          className="min-h-11 w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-900"
+          className="min-h-11 w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-base font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-900"
           >
           Annulla e torna al menu
         </button>

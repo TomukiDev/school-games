@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import HubMenuButton from "@/components/HubMenuButton";
 
 export default function TabellineSetupPage() {
   const router = useRouter();
@@ -48,15 +48,10 @@ export default function TabellineSetupPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 py-8 font-sans dark:bg-black sm:py-16">
       <main className="flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-white px-4 py-8 shadow-sm sm:gap-8 sm:px-6 sm:py-16 dark:bg-black">
         <div className="flex items-center justify-between gap-3">
-          <Link
-            href="/"
-            className="min-h-11 shrink-0 text-sm text-blue-600 hover:underline dark:text-blue-400"
-          >
-            ← Menu
-          </Link>
+          <HubMenuButton />
         </div>
         <h1 className="text-center text-2xl font-bold sm:text-3xl">Impara le Tabelline</h1>
-        <p className="text-center text-sm text-zinc-600 sm:text-base dark:text-zinc-400">
+        <p className="text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
           Scegli le tabelline su cui vuoi allenarti, poi premi Inizia.
         </p>
 
