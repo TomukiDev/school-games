@@ -13,7 +13,7 @@ export default async function RankingsPage() {
     redirect("/login");
   }
 
-  const { data: games, error: appsError } = await supabase.from("app").select("id, name").order("name");
+  const { data: games, error: appsError } = await supabase.from("app").select("id, name").order("priority");
 
   const { data: rankings, error: rankError } = await supabase
     .from("ranking")
@@ -37,13 +37,6 @@ export default async function RankingsPage() {
   }
 
   const list = games ?? [];
-  console.log("rankings:", rankings);
-  console.log("games:", games);
-  console.log("user.id:", user.id);
-  console.log("rankError:", rankError);
-  console.log("appsError:", appsError);
-  console.log("list:", list);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-amber-50 dark:from-zinc-950 dark:via-black dark:to-zinc-950">
