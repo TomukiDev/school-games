@@ -150,7 +150,7 @@ function ClockGameInner() {
         setFeedbackPoints(null);
         advanceScheduledRef.current = false;
       }
-    }, FEEDBACK_MS);
+    }, (wasCorrect ? FEEDBACK_MS : FEEDBACK_MS * 1.5));
   }
 
   function handleAnswer(answer: string): void {
@@ -257,6 +257,12 @@ function ClockGameInner() {
                   <div className="text-3xl font-extrabold sm:text-5xl">
                     {lastWasCorrect ? "🎉 Corretto!" : "😅 Peccato!"}
                   </div>
+                  {!lastWasCorrect && (
+                    <p className="mt-3 text-2xl font-semibold leading-snug text-rose-900 sm:text-xl">
+                      La risposta è:{" "}
+                      <span className="whitespace-nowrap font-extrabold">{question.correctLabel}</span>
+                    </p>
+                  )}
                   {lastWasCorrect && feedbackPoints !== null && feedbackPoints > 0 && (
                     <div className="mt-2 text-xl font-bold text-emerald-800 sm:text-2xl">
                       +{feedbackPoints} punti

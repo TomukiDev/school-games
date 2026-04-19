@@ -138,7 +138,7 @@ function GamePageInner() {
         setLastWasCorrect(null);
         setFeedbackPoints(null);
       }
-    }, FEEDBACK_MS);
+    }, (wasCorrect ? FEEDBACK_MS : FEEDBACK_MS * 1.5));
   }
 
   function handleAnswer(answer: number): void {
@@ -237,6 +237,14 @@ function GamePageInner() {
                   <div className="text-3xl font-extrabold sm:text-5xl">
                     {lastWasCorrect ? "🎉 Corretto!" : "😅 Peccato!"}
                   </div>
+                  {!lastWasCorrect && (
+                    <p className="mt-3 text-2xl font-semibold leading-snug text-rose-900 sm:text-xl">
+                      La risposta è:{" "}
+                      <span className="font-extrabold">
+                        {question.a} x {question.b} = {question.correct}
+                      </span>
+                    </p>
+                  )}
                   {lastWasCorrect && feedbackPoints !== null && feedbackPoints > 0 && (
                     <div className="mt-2 text-xl font-bold text-emerald-800 sm:text-2xl">
                       +{feedbackPoints} punti
