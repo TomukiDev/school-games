@@ -2,8 +2,28 @@ import Image from "next/image";
 import Link from "next/link";
 import HubHeaderActions from "./HubHeaderActions";
 import { GAMES } from "@/lib/games";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function HubPage() {
+export default async function HubPage() {
+  const supabase = await createClient();
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  if (error) {
+    console.error(error);
+    return <div>Error loading user profile</div>;
+  }
+  const profile = data;
+  if (!profile) {
+    return <div>User profile not found</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-amber-50 dark:from-zinc-950 dark:via-black dark:to-zinc-950">
       <header className="sticky top-0 z-10 flex items-center justify-end border-b border-zinc-200/80 bg-white/80 px-4 py-3 backdrop-blur-md dark:border-zinc-800 dark:bg-black/70">
@@ -12,7 +32,7 @@ export default function HubPage() {
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
         <h1 className="text-center text-2xl font-bold text-zinc-900 sm:text-3xl dark:text-zinc-50">
-          Scegli un gioco
+          Ciao {profile.full_name ?? "giocatore"}, scegli un gioco
         </h1>
         <p className="mx-auto mt-2 max-w-md text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
           Tocca un&apos;icona per iniziare. Altri giochi arriveranno presto.
