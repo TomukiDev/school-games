@@ -78,6 +78,8 @@ function ClockGameInner() {
   const [lastWasCorrect, setLastWasCorrect] = useState<boolean | null>(null);
   const [feedbackPoints, setFeedbackPoints] = useState<number | null>(null);
   const savedLevelEndKeyRef = useRef<string | null>(null);
+  /** Prevents double advance (e.g. answer + timeout in the same tick). */
+  const advanceScheduledRef = useRef(false);
 
   useEffect(() => {
     if (mode !== "levelEnd") return;
@@ -89,6 +91,7 @@ function ClockGameInner() {
 
   useEffect(() => {
     if (mode !== "playing") return;
+    if (lastWasCorrect !== null) return;
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
@@ -100,18 +103,21 @@ function ClockGameInner() {
     }, 1000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, level, questionIndex]);
+  }, [mode, level, questionIndex, lastWasCorrect]);
 
   function nextQuestion(wasCorrect: boolean, awardedPoints: number): void {
+    if (advanceScheduledRef.current) return;
+    advanceScheduledRef.current = true;
     setLastWasCorrect(wasCorrect);
     setFeedbackPoints(wasCorrect ? awardedPoints : 0);
     if (wasCorrect) {
       setScore((s) => s + awardedPoints);
       setCorrectCount((c) => c + 1);
     }
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (questionIndex + 1 >= QUESTIONS_PER_LEVEL) {
         const passed = (wasCorrect ? correctCount + 1 : correctCount) >= PASS_THRESHOLD;
+        advanceScheduledRef.current = false;
         setMode(passed ? "levelEnd" : "gameOver");
       } else {
         setQuestionIndex((i) => i + 1);
@@ -119,6 +125,7 @@ function ClockGameInner() {
         setTimeLeft(getSecondsForLevel(level));
         setLastWasCorrect(null);
         setFeedbackPoints(null);
+        advanceScheduledRef.current = false;
       }
     }, FEEDBACK_MS);
   }
@@ -132,6 +139,7 @@ function ClockGameInner() {
   }
 
   function proceedToNextLevel(): void {
+    advanceScheduledRef.current = false;
     const nextLevel = level + 1;
     setLevel(nextLevel);
     setQuestionIndex(0);
@@ -143,6 +151,7 @@ function ClockGameInner() {
   }
 
   function restartGame(): void {
+    advanceScheduledRef.current = false;
     setLevel(1);
     setQuestionIndex(0);
     setCorrectCount(0);
@@ -183,7 +192,12 @@ function ClockGameInner() {
               Che ora è sull&apos;orologio?
             </p>
             <AnalogClock hour24={question.hour24} minute={question.minute} />
-            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div
+              className={`grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 ${
+                lastWasCorrect !== null ? "pointer-events-none" : ""
+              }`}
+              aria-hidden={lastWasCorrect !== null}
+            >
               {question.options.map((opt) => {
                 const isCorrect = opt === question.correctLabel;
                 const showFeedback = lastWasCorrect !== null;
@@ -209,7 +223,7 @@ function ClockGameInner() {
               })}
             </div>
             {lastWasCorrect !== null && (
-              <div className="absolute inset-0 flex items-center justify-center px-2">
+              <div className="absolute inset-0 z-10 flex touch-none items-center justify-center px-2">
                 <div
                   className={`max-w-sm rounded-2xl border-2 px-6 py-5 text-center shadow-lg sm:px-8 sm:py-6 ${
                     lastWasCorrect
