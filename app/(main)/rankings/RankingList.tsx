@@ -43,7 +43,7 @@ export default function RankingList({ games, rankings }: Props) {
             key={g.id}
             className="rounded-3xl border border-zinc-200/90 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-zinc-950 sm:p-5"
           >
-            <div className="flex items-start gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="shrink-0">
                 {g.icon ? (
                   <Image
@@ -64,28 +64,28 @@ export default function RankingList({ games, rankings }: Props) {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <h2 className="text-lg font-bold leading-tight text-zinc-900 dark:text-zinc-50 sm:text-xl">
+                <h2 className="text-center text-lg font-bold leading-tight text-zinc-900 dark:text-zinc-50 sm:text-xl">
                   {title}
                 </h2>
                 {r ? (
                   <dl className="mt-3 grid gap-3 text-base text-zinc-700 dark:text-zinc-300 sm:grid-cols-3 sm:gap-2">
                     <div>
-                      <dt className="text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                      <dt className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                         Miglior punteggio
                       </dt>
-                      <dd className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{r.points}</dd>
+                      <dd className="text-center text-xl font-semibold text-zinc-900 dark:text-zinc-100">{r.points}</dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                      <dt className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                         Livello
                       </dt>
-                      <dd className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{r.level}</dd>
+                      <dd className="text-center text-xl font-semibold text-zinc-900 dark:text-zinc-100">{r.level}</dd>
                     </div>
                     <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                        Data del record
+                      <dt className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                        Data del record...
                       </dt>
-                      <dd className="text-base text-zinc-800 dark:text-zinc-200">{formatDate(r.updated_at)}</dd>
+                      <dd className="text-center text-base text-zinc-800 dark:text-zinc-200">{formatDate(r.updated_at)}</dd>
                     </div>
                   </dl>
                 ) : (
