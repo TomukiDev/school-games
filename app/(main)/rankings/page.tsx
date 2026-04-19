@@ -13,7 +13,10 @@ export default async function RankingsPage() {
     redirect("/login");
   }
 
-  const { data: games, error: appsError } = await supabase.from("app").select("id, name").order("priority");
+  const { data: games, error: appsError } = await supabase
+    .from("app")
+    .select("id, name, icon")
+    .order("priority");
 
   const { data: rankings, error: rankError } = await supabase
     .from("ranking")

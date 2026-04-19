@@ -3,7 +3,8 @@
 create table if not exists public.app (
   id uuid primary key,
   name text, 
-  priority integer
+  priority integer,
+  icon text
 );
 
 alter table public.app enable row level security;

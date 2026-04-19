@@ -30,6 +30,7 @@ function TrophyIcon() {
 
     <svg 
           xmlns="http://www.w3.org/2000/svg" 
+          fill="currentColor"
           className="h-6 w-6"
           aria-hidden
           viewBox="0 0 71.69 122.88">
