@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-const buttonClass =
+/** Shared style for hub header actions (Menu, game setup toggles, etc.). */
+export const hubHeaderButtonClass =
   "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-base font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800";
 
 function GridMenuIcon() {
@@ -23,7 +24,7 @@ function GridMenuIcon() {
 
 export default function HubMenuButton() {
   return (
-    <Link href="/" className={buttonClass} aria-label="Torna al menu dei giochi">
+    <Link href="/" className={hubHeaderButtonClass} aria-label="Torna al menu dei giochi">
       <GridMenuIcon />
       <span>Menu</span>
     </Link>
