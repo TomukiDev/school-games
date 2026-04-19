@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fefdfb;
+  --foreground: #1e293b;
+  --kid-sky: #38bdf8;
+  --kid-sun: #fbbf24;
+  --kid-mint: #34d399;
+  --kid-coral: #fb7185;
+  --kid-lavender: #a78bfa;
+  --kid-ink: #1e293b;
+  --kid-ink-muted: #475569;
+  --kid-surface: #ffffff;
+  --kid-cloud: #f1f5f9;
+  --kid-header-border: rgb(56 189 248 / 0.35);
+  --kid-card-hover: rgb(56 189 248 / 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --kid-sky: #38bdf8;
+    --kid-sun: #f59e0b;
+    --kid-mint: #2dd4bf;
+    --kid-coral: #fb7185;
+    --kid-lavender: #a78bfa;
+    --kid-ink: #f8fafc;
+    --kid-ink-muted: #cbd5e1;
+    --kid-surface: #1e293b;
+    --kid-cloud: #0f172a;
+    --kid-header-border: rgb(56 189 248 / 0.25);
+    --kid-card-hover: rgb(56 189 248 / 0.45);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-kid-sky: var(--kid-sky);
+  --color-kid-sun: var(--kid-sun);
+  --color-kid-mint: var(--kid-mint);
+  --color-kid-coral: var(--kid-coral);
+  --color-kid-lavender: var(--kid-lavender);
+  --color-kid-ink: var(--kid-ink);
+  --color-kid-ink-muted: var(--kid-ink-muted);
+  --color-kid-surface: var(--kid-surface);
+  --color-kid-cloud: var(--kid-cloud);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-kid-display, var(--font-geist-sans));
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

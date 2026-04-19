@@ -2,7 +2,7 @@ import Link from "next/link";
 
 /** Shared style for hub header actions (Menu, game setup toggles, etc.). */
 export const hubHeaderButtonClass =
-  "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-base font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800";
+  "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-kid-sky/40 bg-kid-surface px-3 py-2 text-base font-semibold text-kid-ink shadow-md shadow-kid-sky/10 transition duration-200 hover:-translate-y-0.5 hover:border-kid-sky hover:bg-kid-cloud active:scale-[0.98] dark:border-kid-sky/35 dark:bg-kid-surface dark:text-kid-ink dark:hover:bg-kid-cloud/50";
 
 function GridMenuIcon() {
   return (
