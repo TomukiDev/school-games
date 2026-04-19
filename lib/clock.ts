@@ -21,12 +21,29 @@ export const QUESTIONS_PER_LEVEL = 10;
 export const PASS_THRESHOLD = 6;
 export const FEEDBACK_MS = 1800;
 
-const BASE_SECONDS_PER_QUESTION = 10;
+/** Per-question countdown: numeric seconds at level 1, or no time limit. */
+export type ClockTimerPreset = "unlimited" | 10 | 15 | 20;
+
+export const DEFAULT_CLOCK_TIMER_PRESET: ClockTimerPreset = 20;
+
 const MIN_SECONDS_PER_QUESTION = 4;
 
-export function getSecondsForLevel(level: number): number {
-  const seconds = BASE_SECONDS_PER_QUESTION - (level - 1);
+export function getSecondsForLevel(level: number, preset: ClockTimerPreset): number {
+  if (preset === "unlimited") {
+    return Number.POSITIVE_INFINITY;
+  }
+  const seconds = preset - (level - 1);
   return Math.max(MIN_SECONDS_PER_QUESTION, seconds);
+}
+
+export function parseTimerPresetParam(param: string | null): ClockTimerPreset | null {
+  if (!param || !param.trim()) return null;
+  const s = param.trim();
+  if (s === "unlimited") return "unlimited";
+  if (s === "10" || s === "15" || s === "20") {
+    return Number(s) as 10 | 15 | 20;
+  }
+  return null;
 }
 
 /** Points for a correct answer based on minute value (per game rules). */
@@ -142,4 +159,8 @@ export function parseCategoriesParam(param: string | null): MinuteCategory[] | n
 export function parseFormatParam(param: string | null): TimeFormat | null {
   if (param === "12h" || param === "24h") return param;
   return null;
+}
+
+export function isClockTimerPreset(value: unknown): value is ClockTimerPreset {
+  return value === "unlimited" || value === 10 || value === 15 || value === 20;
 }

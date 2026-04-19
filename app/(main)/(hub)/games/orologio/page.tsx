@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HubMenuButton from "@/components/HubMenuButton";
-import type { MinuteCategory, TimeFormat } from "@/lib/clock";
-import { CATEGORY_MINUTES } from "@/lib/clock";
+import type { ClockTimerPreset, MinuteCategory, TimeFormat } from "@/lib/clock";
+import { CATEGORY_MINUTES, DEFAULT_CLOCK_TIMER_PRESET, isClockTimerPreset } from "@/lib/clock";
 
 const STORAGE_KEY = "clock:setup";
 
 type StoredSetup = {
   categories: MinuteCategory[];
   format: TimeFormat;
+  timerPreset?: ClockTimerPreset;
 };
 
 const ALL_CATEGORIES: MinuteCategory[] = [1, 2, 3, 4];
@@ -30,6 +31,7 @@ export default function OrologioSetupPage() {
   const router = useRouter();
   const [selected, setSelected] = useState<MinuteCategory[]>([1]);
   const [timeFormat, setTimeFormat] = useState<TimeFormat>("24h");
+  const [timerPreset, setTimerPreset] = useState<ClockTimerPreset>(DEFAULT_CLOCK_TIMER_PRESET);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -45,6 +47,9 @@ export default function OrologioSetupPage() {
         }
         if (parsed.format === "12h" || parsed.format === "24h") {
           setTimeFormat(parsed.format);
+        }
+        if (isClockTimerPreset(parsed.timerPreset)) {
+          setTimerPreset(parsed.timerPreset);
         }
       } catch {
         /* ignore */
@@ -65,13 +70,14 @@ export default function OrologioSetupPage() {
 
   function startGame(): void {
     if (selected.length === 0) return;
-    const setup: StoredSetup = { categories: selected, format: timeFormat };
+    const setup: StoredSetup = { categories: selected, format: timeFormat, timerPreset };
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(setup));
     }
     const params = new URLSearchParams({
       cats: selected.join(","),
       fmt: timeFormat,
+      timer: timerPreset === "unlimited" ? "unlimited" : String(timerPreset),
     });
     router.push(`/clock-game?${params.toString()}`);
   }
@@ -110,6 +116,52 @@ export default function OrologioSetupPage() {
                 onChange={() => setTimeFormat("12h")}
               />
               <span className="text-sm sm:text-base">12 ore (es. 2:35)</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset className="flex flex-col gap-3">
+          <legend className="mb-1 font-medium">Tempo per ogni domanda</legend>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 px-4 py-2 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <input
+                type="radio"
+                name="timer"
+                className="h-4 w-4"
+                checked={timerPreset === "unlimited"}
+                onChange={() => setTimerPreset("unlimited")}
+              />
+              <span className="text-sm sm:text-base">Illimitato</span>
+            </label>
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 px-4 py-2 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <input
+                type="radio"
+                name="timer"
+                className="h-4 w-4"
+                checked={timerPreset === 20}
+                onChange={() => setTimerPreset(20)}
+              />
+              <span className="text-sm sm:text-base">20 secondi</span>
+            </label>
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 px-4 py-2 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <input
+                type="radio"
+                name="timer"
+                className="h-4 w-4"
+                checked={timerPreset === 15}
+                onChange={() => setTimerPreset(15)}
+              />
+              <span className="text-sm sm:text-base">15 secondi</span>
+            </label>
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 px-4 py-2 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <input
+                type="radio"
+                name="timer"
+                className="h-4 w-4"
+                checked={timerPreset === 10}
+                onChange={() => setTimerPreset(10)}
+              />
+              <span className="text-sm sm:text-base">10 secondi</span>
             </label>
           </div>
         </fieldset>

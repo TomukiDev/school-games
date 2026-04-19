@@ -7,16 +7,20 @@ import HubMenuButton from "@/components/HubMenuButton";
 import { APP_GAME_IDS, saveRankingIfBest } from "@/lib/game-ranking";
 import {
   type ClockQuestion,
+  type ClockTimerPreset,
   type MinuteCategory,
   type TimeFormat,
+  DEFAULT_CLOCK_TIMER_PRESET,
   FEEDBACK_MS,
   PASS_THRESHOLD,
   QUESTIONS_PER_LEVEL,
   generateClockQuestion,
   getPointsForMinute,
   getSecondsForLevel,
+  isClockTimerPreset,
   parseCategoriesParam,
   parseFormatParam,
+  parseTimerPresetParam,
 } from "@/lib/clock";
 
 const STORAGE_KEY = "clock:setup";
@@ -26,6 +30,7 @@ function ClockGameInner() {
   const params = useSearchParams();
   const catsParam = params.get("cats");
   const fmtParam = params.get("fmt");
+  const timerParam = params.get("timer");
 
   const categories = useMemo((): MinuteCategory[] => {
     const fromUrl = parseCategoriesParam(catsParam);
@@ -66,6 +71,23 @@ function ClockGameInner() {
     return "24h";
   }, [fmtParam]);
 
+  const timerPreset = useMemo((): ClockTimerPreset => {
+    const fromUrl = parseTimerPresetParam(timerParam);
+    if (fromUrl !== null) return fromUrl;
+    if (typeof window !== "undefined") {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { timerPreset?: unknown };
+          if (isClockTimerPreset(parsed.timerPreset)) return parsed.timerPreset;
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    return DEFAULT_CLOCK_TIMER_PRESET;
+  }, [timerParam]);
+
   const [level, setLevel] = useState<number>(1);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [question, setQuestion] = useState<ClockQuestion>(() =>
@@ -73,7 +95,7 @@ function ClockGameInner() {
   );
   const [score, setScore] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(getSecondsForLevel(1));
+  const [timeLeft, setTimeLeft] = useState<number>(() => getSecondsForLevel(1, timerPreset));
   const [mode, setMode] = useState<"playing" | "levelEnd" | "gameOver">("playing");
   const [lastWasCorrect, setLastWasCorrect] = useState<boolean | null>(null);
   const [feedbackPoints, setFeedbackPoints] = useState<number | null>(null);
@@ -92,18 +114,19 @@ function ClockGameInner() {
   useEffect(() => {
     if (mode !== "playing") return;
     if (lastWasCorrect !== null) return;
+    if (timerPreset === "unlimited") return;
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
           nextQuestion(false, 0);
-          return getSecondsForLevel(level);
+          return getSecondsForLevel(level, timerPreset);
         }
         return t - 1;
       });
     }, 1000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, level, questionIndex, lastWasCorrect]);
+  }, [mode, level, questionIndex, lastWasCorrect, timerPreset]);
 
   function nextQuestion(wasCorrect: boolean, awardedPoints: number): void {
     if (advanceScheduledRef.current) return;
@@ -122,7 +145,7 @@ function ClockGameInner() {
       } else {
         setQuestionIndex((i) => i + 1);
         setQuestion(generateClockQuestion(categories, level, timeFormat));
-        setTimeLeft(getSecondsForLevel(level));
+        setTimeLeft(getSecondsForLevel(level, timerPreset));
         setLastWasCorrect(null);
         setFeedbackPoints(null);
         advanceScheduledRef.current = false;
@@ -145,7 +168,7 @@ function ClockGameInner() {
     setQuestionIndex(0);
     setCorrectCount(0);
     setQuestion(generateClockQuestion(categories, nextLevel, timeFormat));
-    setTimeLeft(getSecondsForLevel(nextLevel));
+    setTimeLeft(getSecondsForLevel(nextLevel, timerPreset));
     setMode("playing");
     setLastWasCorrect(null);
   }
@@ -157,7 +180,7 @@ function ClockGameInner() {
     setCorrectCount(0);
     setScore(0);
     setQuestion(generateClockQuestion(categories, 1, timeFormat));
-    setTimeLeft(getSecondsForLevel(1));
+    setTimeLeft(getSecondsForLevel(1, timerPreset));
     setMode("playing");
     setLastWasCorrect(null);
   }
@@ -180,7 +203,7 @@ function ClockGameInner() {
             </strong>
           </span>
           <span className="inline-flex min-h-10 items-center rounded-full bg-sky-200 px-3 py-1 text-sm text-sky-900">
-            ⏳ {timeLeft}s
+            ⏳ {Number.isFinite(timeLeft) ? `${Math.floor(timeLeft)}s` : "Illimitato"}
           </span>
         </div>
       </header>
