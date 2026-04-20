@@ -96,6 +96,8 @@ function GamePageInner() {
   const [lastWasCorrect, setLastWasCorrect] = useState<boolean | null>(null);
   const [feedbackPoints, setFeedbackPoints] = useState<number | null>(null);
   const savedLevelEndKeyRef = useRef<string | null>(null);
+  /** Prevents double advance (e.g. answer + timeout in the same tick). */
+  const advanceScheduledRef = useRef(false);
 
   useEffect(() => {
     if (mode !== "levelEnd") return;
@@ -107,6 +109,7 @@ function GamePageInner() {
 
   useEffect(() => {
     if (mode !== "playing") return;
+    if (lastWasCorrect !== null) return;
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
@@ -118,18 +121,22 @@ function GamePageInner() {
     }, 1000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, level, questionIndex]);
+  }, [mode, level, questionIndex, lastWasCorrect]);
 
   function nextQuestion(wasCorrect: boolean, awardedPoints: number): void {
+    if (advanceScheduledRef.current) return;
+    advanceScheduledRef.current = true;
     setLastWasCorrect(wasCorrect);
     setFeedbackPoints(wasCorrect ? awardedPoints : 0);
     if (wasCorrect) {
       setScore((s) => s + awardedPoints);
       setCorrectCount((c) => c + 1);
     }
-    setTimeout(() => {
+    const feedbackDelay = wasCorrect ? FEEDBACK_MS : FEEDBACK_MS * 1.5;
+    window.setTimeout(() => {
       if (questionIndex + 1 >= QUESTIONS_PER_LEVEL) {
         const passed = (wasCorrect ? correctCount + 1 : correctCount) >= PASS_THRESHOLD;
+        advanceScheduledRef.current = false;
         setMode(passed ? "levelEnd" : "gameOver");
       } else {
         setQuestionIndex((i) => i + 1);
@@ -137,8 +144,9 @@ function GamePageInner() {
         setTimeLeft(getSecondsForLevel(level));
         setLastWasCorrect(null);
         setFeedbackPoints(null);
+        advanceScheduledRef.current = false;
       }
-    }, (wasCorrect ? FEEDBACK_MS : FEEDBACK_MS * 1.5));
+    }, feedbackDelay);
   }
 
   function handleAnswer(answer: number): void {
@@ -150,17 +158,19 @@ function GamePageInner() {
   }
 
   function proceedToNextLevel(): void {
-    setLevel((l) => l + 1);
+    advanceScheduledRef.current = false;
+    const nextLevel = level + 1;
+    setLevel(nextLevel);
     setQuestionIndex(0);
     setCorrectCount(0);
     setQuestion(generateQuestion(allowedTables));
-    const nextLevel = level + 1;
     setTimeLeft(getSecondsForLevel(nextLevel));
     setMode("playing");
     setLastWasCorrect(null);
   }
 
   function restartGame(): void {
+    advanceScheduledRef.current = false;
     setLevel(1);
     setQuestionIndex(0);
     setCorrectCount(0);
@@ -200,7 +210,12 @@ function GamePageInner() {
             <div className="mt-4 text-4xl font-extrabold text-fuchsia-800 drop-shadow-sm sm:mt-8 sm:text-5xl">
               {question.a} × {question.b}
             </div>
-            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div
+              className={`grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 ${
+                lastWasCorrect !== null ? "pointer-events-none" : ""
+              }`}
+              aria-hidden={lastWasCorrect !== null}
+            >
               {question.options.map((opt) => {
                 const isCorrect = opt === question.correct;
                 const showFeedback = lastWasCorrect !== null;
@@ -226,7 +241,7 @@ function GamePageInner() {
               })}
             </div>
             {lastWasCorrect !== null && (
-              <div className="absolute inset-0 flex items-center justify-center px-2">
+              <div className="absolute inset-0 z-10 flex touch-none items-center justify-center px-2">
                 <div
                   className={`max-w-sm rounded-2xl border-2 px-6 py-5 text-center shadow-lg sm:px-8 sm:py-6 ${
                     lastWasCorrect
