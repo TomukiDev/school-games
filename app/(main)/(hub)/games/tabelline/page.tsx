@@ -52,7 +52,7 @@ export default function TabellineSetupPage() {
         </div>
         <h1 className="text-center text-2xl font-bold sm:text-3xl">Impara le Tabelline</h1>
         <p className="text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
-          Scegli su cosa vuoi allenarti, poi premi Inizia.
+          Scegli su quali tabelline vuoi allenarti.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -78,7 +78,7 @@ export default function TabellineSetupPage() {
                 checked={selected.includes(t)}
                 onChange={() => toggleTable(t)}
               />
-              <span className="text-sm sm:text-base">{t} X ...</span>
+              <span className="text-4xl text-center text-kid-ink font-bold sm:text-base">{t}</span>
             </label>
           ))}
         </div>
