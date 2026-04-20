@@ -52,7 +52,7 @@ export default function TabellineSetupPage() {
         </div>
         <h1 className="text-center text-2xl font-bold sm:text-3xl">Impara le Tabelline</h1>
         <p className="text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
-          Scegli le tabelline su cui vuoi allenarti, poi premi Inizia.
+          Scegli su cosa vuoi allenarti, poi premi Inizia.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -62,7 +62,7 @@ export default function TabellineSetupPage() {
             onClick={toggleAll}
             type="button"
           >
-            {selected.length === 10 ? "Deseleziona tutto" : "Seleziona tutto"}
+            {selected.length === 10 ? "Deseleziona tutto" : "Tutte le tabelline"}
           </button>
         </div>
 
@@ -78,7 +78,7 @@ export default function TabellineSetupPage() {
                 checked={selected.includes(t)}
                 onChange={() => toggleTable(t)}
               />
-              <span className="text-sm sm:text-base">Tabellina del {t}</span>
+              <span className="text-sm sm:text-base">{t} X ...</span>
             </label>
           ))}
         </div>
