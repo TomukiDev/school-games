@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import HubMenuButton, { hubHeaderButtonClass } from "@/components/HubMenuButton";
+import HubMenuButton, {
+  HubClockCircleIcon,
+  HubWrenchIcon,
+  hubHeaderButtonClass,
+} from "@/components/HubMenuButton";
 import type { ClockTimerPreset, MinuteCategory, TimeFormat } from "@/lib/clock";
 import { CATEGORY_MINUTES, DEFAULT_CLOCK_TIMER_PRESET, isClockTimerPreset } from "@/lib/clock";
 
 const STORAGE_KEY = "clock:setup";
+
+const startButtonClass =
+  "min-h-12 w-full max-w-md rounded-full px-8 py-3 text-base font-semibold text-white shadow-md transition disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-11";
 
 type StoredSetup = {
   categories: MinuteCategory[];
@@ -26,9 +33,6 @@ const CATEGORY_INFO: { cat: MinuteCategory; label: string; points: number }[] = 
 function formatMinuteList(cat: MinuteCategory): string {
   return CATEGORY_MINUTES[cat].join(", ");
 }
-
-/** Same visual size as `GridMenuIcon` in HubMenuButton (`h-5 w-5`). */
-const headerIconImgClass = "h-5 w-5 shrink-0 object-contain";
 
 export default function OrologioSetupPage() {
   const router = useRouter();
@@ -86,10 +90,15 @@ export default function OrologioSetupPage() {
     router.push(`/clock-game?${params.toString()}`);
   }
 
+  const canStart = selected.length > 0;
+
+  const radioCardClass =
+    "flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border-2 border-zinc-200 bg-white px-4 py-2 transition hover:border-kid-sky/50 hover:bg-kid-cloud/50 active:scale-[0.99] dark:border-zinc-700 dark:bg-kid-surface dark:hover:border-kid-sky/40 sm:min-h-11";
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 py-8 font-sans dark:bg-black sm:py-16">
-      <main className="flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-white px-4 py-8 shadow-sm sm:gap-8 sm:px-6 sm:py-16 dark:bg-black">
-        <div className="flex w-full items-center justify-between gap-3">
+    <div className="flex min-h-dvh flex-col bg-zinc-50 dark:bg-black">
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] pt-5 sm:pb-10 sm:pt-8">
+        <div className="flex shrink-0 items-center justify-between gap-3">
           <HubMenuButton />
           {!advancedOpen ? (
             <button
@@ -99,14 +108,7 @@ export default function OrologioSetupPage() {
               aria-expanded={false}
               aria-label="Apri impostazioni avanzate"
             >
-              <img
-                src="/games/wrench.svg"
-                alt=""
-                width={20}
-                height={20}
-                className={headerIconImgClass}
-                aria-hidden
-              />
+              <HubWrenchIcon />
               <span>Imposta</span>
             </button>
           ) : (
@@ -117,14 +119,7 @@ export default function OrologioSetupPage() {
               aria-expanded={true}
               aria-label="Torna a giocare"
             >
-              <img
-                src="/games/clock-icon.svg"
-                alt=""
-                width={20}
-                height={20}
-                className={headerIconImgClass}
-                aria-hidden
-              />
+              <HubClockCircleIcon />
               <span>Gioca</span>
             </button>
           )}
@@ -132,52 +127,51 @@ export default function OrologioSetupPage() {
 
         {!advancedOpen && (
           <>
-            <h1 className="text-center text-2xl font-bold sm:text-3xl">Che ora è?</h1>
-            <p className="text-center text-base text-zinc-600 sm:text-lg dark:text-zinc-400">
+            <h1 className="mt-4 text-center font-display text-2xl font-extrabold tracking-tight text-kid-ink sm:mt-6 sm:text-3xl">
+              Che ora è?
+            </h1>
+            <p className="mx-auto mt-2 max-w-md text-center text-sm leading-snug text-kid-ink-muted sm:text-base">
               Scegli quali minuti possono comparire sull&apos;orologio, poi premi Inizia.
             </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <span className="font-medium">Categorie di minuti</span>
+            <div className="mt-5 flex w-full shrink-0 flex-row flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:mt-6">
+              <span className="min-w-0 text-sm font-semibold text-kid-ink sm:text-base">Categorie di minuti</span>
               <button
-                className="min-h-11 rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
-                onClick={toggleAll}
                 type="button"
+                className="shrink-0 rounded-xl border-2 border-kid-sky/40 bg-kid-surface px-4 py-2 text-sm font-semibold text-kid-ink shadow-sm transition hover:border-kid-sky hover:bg-kid-cloud active:scale-[0.98] dark:border-kid-sky/35 dark:bg-kid-surface dark:hover:bg-kid-cloud/50 sm:min-h-11 sm:px-5"
+                onClick={toggleAll}
               >
                 {selected.length === ALL_CATEGORIES.length ? "Solo la più facile" : "Seleziona tutto"}
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3">
+            <ul className="mt-4 grid list-none grid-cols-1 gap-3 sm:mt-5 sm:grid-cols-2 sm:gap-3">
               {CATEGORY_INFO.map(({ cat, label, points }) => (
-                <label
-                  key={cat}
-                  className="flex min-h-11 cursor-pointer flex-col gap-1 rounded-md border border-zinc-200 px-3 py-3 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 sm:flex-row sm:items-start sm:gap-3"
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 shrink-0"
-                      checked={selected.includes(cat)}
-                      onChange={() => toggleCategory(cat)}
-                    />
-                    <span className="text-sm font-semibold sm:text-base">
-                      {label}
+                <li key={cat}>
+                  <label className="flex min-h-[4.25rem] cursor-pointer flex-col gap-1 rounded-2xl border-2 border-zinc-200 bg-white px-3 py-3 transition hover:border-kid-sky/50 hover:bg-kid-cloud/50 active:scale-[0.99] dark:border-zinc-700 dark:bg-kid-surface dark:hover:border-kid-sky/40 sm:min-h-0 sm:flex-row sm:items-start sm:gap-3 sm:py-4">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 shrink-0 rounded border-zinc-400"
+                        checked={selected.includes(cat)}
+                        onChange={() => toggleCategory(cat)}
+                      />
+                      <span className="text-sm font-semibold text-kid-ink sm:text-base">{label}</span>
+                    </div>
+                    <span className="pl-6 text-sm text-kid-ink-muted sm:pl-0">
+                      Minuti: {formatMinuteList(cat)} ({points} pt)
                     </span>
-                  </div>
-                  <span className="pl-6 text-sm text-zinc-500 sm:pl-0 dark:text-zinc-400">
-                    Minuti: {formatMinuteList(cat)} ({points} pt)
-                  </span>
-                </label>
+                  </label>
+                </li>
               ))}
-            </div>
+            </ul>
 
-            <div className="flex items-center justify-center pt-4">
+            <div className="mt-8 hidden justify-center sm:flex">
               <button
                 onClick={startGame}
-                disabled={selected.length === 0}
-                className="min-h-11 rounded-full px-8 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-                style={{ backgroundColor: selected.length === 0 ? "#9ca3af" : "#2563eb" }}
+                disabled={!canStart}
+                className={startButtonClass}
+                style={{ backgroundColor: !canStart ? "#9ca3af" : "#2563eb" }}
                 type="button"
               >
                 Inizia
@@ -187,89 +181,101 @@ export default function OrologioSetupPage() {
         )}
 
         {advancedOpen && (
-          <div
-            className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50 sm:p-5"
-            role="region"
-            aria-label="Impostazioni avanzate"
-          >
-            <h2 className="border-b border-zinc-200 pb-3 text-sm font-semibold text-zinc-900 dark:border-zinc-700 dark:text-zinc-100">
+          <div className="mt-6 flex flex-col gap-5 sm:mt-8" role="region" aria-label="Impostazioni avanzate">
+            <h2 className="text-center font-display text-lg font-extrabold tracking-tight text-kid-ink sm:text-xl">
               Impostazioni avanzate
             </h2>
 
             <fieldset className="flex flex-col gap-3">
-              <legend className="mb-1 font-medium">Formato dell&apos;ora</legend>
-              <div className="flex flex-wrap gap-4">
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <legend className="text-sm font-semibold text-kid-ink sm:text-base">Formato dell&apos;ora</legend>
+              <div className="flex flex-wrap gap-3">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="fmt"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timeFormat === "12h"}
                     onChange={() => setTimeFormat("12h")}
                   />
-                  <span className="text-sm sm:text-base">12 ore (es. 2:35)</span>
+                  <span className="text-sm text-kid-ink sm:text-base">12 ore (es. 2:35)</span>
                 </label>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="fmt"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timeFormat === "24h"}
                     onChange={() => setTimeFormat("24h")}
                   />
-                  <span className="text-sm sm:text-base">24 ore (es. 14:35)</span>
+                  <span className="text-sm text-kid-ink sm:text-base">24 ore (es. 14:35)</span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset className="flex flex-col gap-3">
-              <legend className="mb-1 font-medium">Tempo per ogni domanda</legend>
-              <div className="flex flex-wrap gap-4">
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <legend className="text-sm font-semibold text-kid-ink sm:text-base">Tempo per ogni domanda</legend>
+              <div className="flex flex-wrap gap-3">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="timer"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timerPreset === "unlimited"}
                     onChange={() => setTimerPreset("unlimited")}
                   />
-                  <span className="text-sm sm:text-base">Illimitato</span>
+                  <span className="text-sm text-kid-ink sm:text-base">Illimitato</span>
                 </label>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="timer"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timerPreset === 20}
                     onChange={() => setTimerPreset(20)}
                   />
-                  <span className="text-sm sm:text-base">20 secondi</span>
+                  <span className="text-sm text-kid-ink sm:text-base">20 secondi</span>
                 </label>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="timer"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timerPreset === 15}
                     onChange={() => setTimerPreset(15)}
                   />
-                  <span className="text-sm sm:text-base">15 secondi</span>
+                  <span className="text-sm text-kid-ink sm:text-base">15 secondi</span>
                 </label>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-black hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <label className={radioCardClass}>
                   <input
                     type="radio"
                     name="timer"
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0"
                     checked={timerPreset === 10}
                     onChange={() => setTimerPreset(10)}
                   />
-                  <span className="text-sm sm:text-base">10 secondi</span>
+                  <span className="text-sm text-kid-ink sm:text-base">10 secondi</span>
                 </label>
               </div>
             </fieldset>
           </div>
         )}
       </main>
+
+      {!advancedOpen && (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200/90 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/95 sm:hidden">
+          <div className="mx-auto flex max-w-3xl justify-center pb-[env(safe-area-inset-bottom,0.5rem)] pt-0.5">
+            <button
+              onClick={startGame}
+              disabled={!canStart}
+              className={startButtonClass}
+              style={{ backgroundColor: !canStart ? "#9ca3af" : "#2563eb" }}
+              type="button"
+            >
+              Inizia
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
