@@ -221,7 +221,7 @@ function ClockGameInner() {
               }`}
               aria-hidden={lastWasCorrect !== null}
             >
-              {question.options.map((opt) => {
+              {question.options.map((opt, idx) => {
                 const isCorrect = opt === question.correctLabel;
                 const showFeedback = lastWasCorrect !== null;
                 const bg =
@@ -230,8 +230,7 @@ function ClockGameInner() {
                     : showFeedback && !isCorrect
                       ? "opacity-60"
                       : "hover:scale-[1.02] transition-transform";
-                const palette = ["bg-rose-200", "bg-sky-200", "bg-amber-200"] as const;
-                const colorClass = palette[opt.length % palette.length];
+                const colorClass = question.optionColors[idx % question.optionColors.length];
                 return (
                   <button
                     key={opt}

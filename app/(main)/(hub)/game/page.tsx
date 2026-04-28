@@ -11,6 +11,7 @@ type Question = {
   b: number;
   correct: number;
   options: number[];
+  optionColors: string[];
 };
 
 const QUESTIONS_PER_LEVEL = 10;
@@ -57,7 +58,8 @@ function generateQuestion(allowedTables: number[]): Question {
   }
 
   const options = shuffle([correct, ...Array.from(wrongs).slice(0, 2)]);
-  return { a, b, correct, options };
+  const optionColors = shuffle(["bg-rose-200", "bg-sky-200", "bg-amber-200"]);
+  return { a, b, correct, options, optionColors };
 }
 
 function GamePageInner() {
@@ -216,7 +218,7 @@ function GamePageInner() {
               }`}
               aria-hidden={lastWasCorrect !== null}
             >
-              {question.options.map((opt) => {
+              {question.options.map((opt, idx) => {
                 const isCorrect = opt === question.correct;
                 const showFeedback = lastWasCorrect !== null;
                 const bg =
@@ -225,8 +227,7 @@ function GamePageInner() {
                     : showFeedback && !isCorrect
                       ? "opacity-60"
                       : "hover:scale-[1.02] transition-transform";
-                const palette = ["bg-rose-200", "bg-sky-200", "bg-amber-200"] as const;
-                const colorClass = palette[(opt + question.a + question.b) % palette.length];
+                const colorClass = question.optionColors[idx % question.optionColors.length];
                 return (
                   <button
                     key={opt}

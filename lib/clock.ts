@@ -15,6 +15,7 @@ export type ClockQuestion = {
   minute: number;
   correctLabel: string;
   options: string[];
+  optionColors: string[];
 };
 
 export const QUESTIONS_PER_LEVEL = 10;
@@ -99,16 +100,15 @@ function randomInt(min: number, max: number): number {
 }
 
 /**
- * Builds a quiz question: random time using only minutes allowed by unlocked categories,
+ * Builds a quiz question: random time using only minutes allowed by selected categories,
  * three distinct text options (same format).
  */
 export function generateClockQuestion(
   selectedCategories: MinuteCategory[],
-  level: number,
+  _level: number,
   format: TimeFormat,
 ): ClockQuestion {
-  const unlocked = getUnlockedCategories(level, selectedCategories);
-  const allowedMinutes = getAllowedMinutesForCategories(unlocked);
+  const allowedMinutes = getAllowedMinutesForCategories(selectedCategories);
   if (allowedMinutes.length === 0) {
     throw new Error("generateClockQuestion: no allowed minutes");
   }
@@ -139,11 +139,13 @@ export function generateClockQuestion(
   }
 
   const options = shuffle([correctLabel, ...Array.from(wrongLabels).slice(0, 2)]);
+  const optionColors = shuffle(["bg-rose-200", "bg-sky-200", "bg-amber-200"]);
   return {
     hour24,
     minute,
     correctLabel,
     options,
+    optionColors,
   };
 }
 
