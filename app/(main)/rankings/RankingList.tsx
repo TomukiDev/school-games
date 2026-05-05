@@ -71,7 +71,7 @@ export default function RankingList({ games, rankings }: Props) {
                   <dl className="mt-3 grid gap-3 text-base text-zinc-700 dark:text-zinc-300 sm:grid-cols-3 sm:gap-2">
                     <div>
                       <dt className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                        Miglior punteggio
+                        Record punti
                       </dt>
                       <dd className="text-center text-xl font-semibold text-zinc-900 dark:text-zinc-100">{r.points}</dd>
                     </div>
@@ -83,14 +83,14 @@ export default function RankingList({ games, rankings }: Props) {
                     </div>
                     <div className="sm:col-span-1">
                       <dt className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                        Data del record...
+                        Record del
                       </dt>
                       <dd className="text-center text-base text-zinc-800 dark:text-zinc-200">{formatDate(r.updated_at)}</dd>
                     </div>
                   </dl>
                 ) : (
                   <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">
-                    Non hai ancora registrato un punteggio per questo gioco.
+                    Non hai ancora un record in questa sfida.
                   </p>
                 )}
               </div>

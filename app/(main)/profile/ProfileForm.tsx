@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signOutClient } from "@/lib/auth/sign-out-client";
+import PlayfulMascot from "@/components/PlayfulMascot";
 
 type Props = {
   userId: string;
   email: string;
   initialFullName: string;
   initialBirthDate: string;
+  initialMascotSkin: "classic" | "sunny" | "galaxy";
   setup: boolean;
 };
 
@@ -19,12 +19,14 @@ export default function ProfileForm({
   email,
   initialFullName,
   initialBirthDate,
+  initialMascotSkin,
   setup,
 }: Props) {
   const router = useRouter();
   const [fullName, setFullName] = useState(initialFullName);
   const [birthDate, setBirthDate] = useState(initialBirthDate);
   const [emailField, setEmailField] = useState(email);
+  const [mascotSkin, setMascotSkin] = useState<Props["initialMascotSkin"]>(initialMascotSkin);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -58,6 +60,7 @@ export default function ProfileForm({
         id: userId,
         full_name: trimmed || null,
         birth_date: birthDate || null,
+        mascot_skin: mascotSkin,
         profile_completed: completed,
         updated_at: new Date().toISOString(),
       },
@@ -84,11 +87,6 @@ export default function ProfileForm({
     router.push("/");
     router.refresh();
   }
-
-  async function signOut() {
-    await signOutClient(router);
-  }
-
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-6 px-4 py-8 sm:py-12">
       <div className="flex items-start justify-between gap-4">
@@ -132,6 +130,25 @@ export default function ProfileForm({
             onChange={(e) => setBirthDate(e.target.value)}
             className="mt-1 w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
           />
+        </div>
+
+        <div>
+          <p className="block text-base font-medium text-zinc-700 dark:text-zinc-300">Mascotte</p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {(["classic", "sunny", "galaxy"] as const).map((skin) => (
+              <button
+                key={skin}
+                type="button"
+                onClick={() => setMascotSkin(skin)}
+                className={`rounded-xl border p-2 ${mascotSkin === skin ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30" : "border-zinc-300 dark:border-zinc-700"}`}
+              >
+                <PlayfulMascot skin={skin} className="mx-auto h-12 sm:h-14" />
+                <span className="mt-1 block text-sm font-semibold capitalize text-zinc-700 dark:text-zinc-200">
+                  {skin}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>

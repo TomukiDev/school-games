@@ -3,6 +3,7 @@ export type ProfileRow = {
   full_name: string | null;
   birth_date: string | null;
   profile_completed: boolean;
+  mascot_skin?: "classic" | "sunny" | "galaxy" | null;
   updated_at?: string;
 };
 

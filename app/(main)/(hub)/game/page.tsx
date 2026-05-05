@@ -3,8 +3,10 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import HubMenuButton from "@/components/HubMenuButton";
-import { APP_GAME_IDS, saveRankingIfBest } from "@/lib/game-ranking";
+import SessionSummary from "@/components/SessionSummary";
+import { APP_GAME_IDS } from "@/lib/game-ranking";
 import { getPointsFor } from "@/lib/difficulty";
+import { finalizeGameSession, type SessionSummaryData } from "@/lib/finalize-game-session";
 
 type Question = {
   a: number;
@@ -97,17 +99,27 @@ function GamePageInner() {
   const [mode, setMode] = useState<"playing" | "levelEnd" | "gameOver">("playing");
   const [lastWasCorrect, setLastWasCorrect] = useState<boolean | null>(null);
   const [feedbackPoints, setFeedbackPoints] = useState<number | null>(null);
-  const savedLevelEndKeyRef = useRef<string | null>(null);
+  const [sessionSummary, setSessionSummary] = useState<SessionSummaryData | null>(null);
+  const savedSessionKeyRef = useRef<string | null>(null);
   /** Prevents double advance (e.g. answer + timeout in the same tick). */
   const advanceScheduledRef = useRef(false);
 
   useEffect(() => {
-    if (mode !== "levelEnd") return;
-    const key = `tabelline-L${level}-P${score}`;
-    if (savedLevelEndKeyRef.current === key) return;
-    savedLevelEndKeyRef.current = key;
-    void saveRankingIfBest(APP_GAME_IDS.tabelline, level, score);
-  }, [mode, level, score]);
+    if (mode !== "levelEnd" && mode !== "gameOver") return;
+    const key = `tabelline-${mode}-L${level}-P${score}-C${correctCount}`;
+    if (savedSessionKeyRef.current === key) return;
+    savedSessionKeyRef.current = key;
+    const passed = mode === "levelEnd";
+    void finalizeGameSession({
+      gameId: APP_GAME_IDS.tabelline,
+      passed,
+      level,
+      points: score,
+      stats: { selectedTables: allowedTables },
+    }).then((summary) => {
+      setSessionSummary(summary);
+    });
+  }, [mode, level, score, correctCount, allowedTables]);
 
   useEffect(() => {
     if (mode !== "playing") return;
@@ -161,6 +173,8 @@ function GamePageInner() {
 
   function proceedToNextLevel(): void {
     advanceScheduledRef.current = false;
+    savedSessionKeyRef.current = null;
+    setSessionSummary(null);
     const nextLevel = level + 1;
     setLevel(nextLevel);
     setQuestionIndex(0);
@@ -173,6 +187,8 @@ function GamePageInner() {
 
   function restartGame(): void {
     advanceScheduledRef.current = false;
+    savedSessionKeyRef.current = null;
+    setSessionSummary(null);
     setLevel(1);
     setQuestionIndex(0);
     setCorrectCount(0);
@@ -195,7 +211,7 @@ function GamePageInner() {
             Punti: <strong className="ml-1">{score}</strong>
           </span>
           <span className="inline-flex min-h-10 items-center rounded-full bg-amber-200 px-3 py-1 text-sm text-amber-900">
-            Domanda:{" "}
+            Round:{" "}
             <strong className="ml-1">
               {questionIndex + 1}/{QUESTIONS_PER_LEVEL}
             </strong>
@@ -274,29 +290,34 @@ function GamePageInner() {
 
         {mode === "levelEnd" && (
           <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
-            <h2 className="text-center text-3xl font-extrabold text-emerald-800 sm:text-4xl">
-              Livello superato! 🎯
-            </h2>
-            <p className="text-center text-zinc-800">
-              Risposte corrette: {correctCount}/{QUESTIONS_PER_LEVEL} • Punteggio: {score}
-            </p>
+            <SessionSummary
+              mode="levelEnd"
+              summary={sessionSummary}
+              correctCount={correctCount}
+              totalQuestions={QUESTIONS_PER_LEVEL}
+            />
             <button
               onClick={proceedToNextLevel}
               className="min-h-11 rounded-full px-8 py-3 font-semibold text-white"
               style={{ backgroundColor: "#16a34a" }}
               type="button"
             >
-              Prossimo livello
+              Nuovo stage
             </button>
           </div>
         )}
 
         {mode === "gameOver" && (
           <div className="flex flex-col items-center gap-6 pt-10 sm:pt-16">
-            <h2 className="text-center text-3xl font-extrabold text-rose-800 sm:text-4xl">Game Over 💫</h2>
+            <SessionSummary
+              mode="retry"
+              summary={sessionSummary}
+              correctCount={correctCount}
+              totalQuestions={QUESTIONS_PER_LEVEL}
+            />
             <p className="max-w-md text-center text-zinc-800">
-              Hai risposto correttamente a {correctCount} su {QUESTIONS_PER_LEVEL}. Servono almeno {PASS_THRESHOLD}{" "}
-              per passare.
+              Questa volta hai trovato {correctCount} risposte giuste su {QUESTIONS_PER_LEVEL}. Obiettivo stella:{" "}
+              {PASS_THRESHOLD} risposte corrette.
             </p>
             <div className="flex w-full max-w-md flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
               <button
@@ -305,7 +326,7 @@ function GamePageInner() {
                 style={{ backgroundColor: "#2563eb" }}
                 type="button"
               >
-                Riprova
+                Rigioca
               </button>
               <button
                 onClick={() => router.push("/games/tabelline")}

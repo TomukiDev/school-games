@@ -128,10 +128,10 @@ export default function OrologioSetupPage() {
         {!advancedOpen && (
           <>
             <h1 className="mt-4 text-center font-display text-2xl font-extrabold tracking-tight text-kid-ink sm:mt-6 sm:text-3xl">
-              Che ora è?
+              Sfida Orologio
             </h1>
             <p className="mx-auto mt-2 max-w-md text-center text-sm leading-snug text-kid-ink-muted sm:text-base">
-              Scegli quali minuti possono comparire sull&apos;orologio, poi premi Inizia.
+              Scegli le regole del round, poi prova a migliorare il tuo record.
             </p>
 
             <div className="mt-5 flex w-full shrink-0 flex-row flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:mt-6">

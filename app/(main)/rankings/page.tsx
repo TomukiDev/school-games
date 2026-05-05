@@ -47,7 +47,7 @@ export default async function RankingsPage() {
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-3">
           <HubMenuButton />
           <h1 className="text-center text-lg font-bold text-zinc-900 dark:text-zinc-50 sm:text-xl">
-            I tuoi punteggi
+            I tuoi record
           </h1>
           <span className="w-16 shrink-0 sm:w-20" aria-hidden />
         </div>
@@ -55,12 +55,12 @@ export default async function RankingsPage() {
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
         <p className="mx-auto max-w-lg text-center text-base text-zinc-600 dark:text-zinc-400">
-          Per ogni gioco vedi il miglior risultato che hai ottenuto al termine di un livello (livello raggiunto e
-          punti totali cumulativi in quella sessione).
+          Qui trovi i tuoi migliori risultati in ogni sfida: livello più alto raggiunto e punteggio totale del tuo
+          round record.
         </p>
         {list.length === 0 ? (
           <p className="mt-10 text-center text-zinc-600 dark:text-zinc-400">
-            Inizia a giocare per accumulare punti, poi torna qui per vedere i tuoi migliori risultati!
+            Gioca il tuo primo round e torna qui per vedere i tuoi record!
           </p>
         ) : (
           <RankingList games={list} rankings={rankings ?? []} />

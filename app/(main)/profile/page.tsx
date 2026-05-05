@@ -19,7 +19,7 @@ export default async function ProfilePage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, birth_date")
+    .select("full_name, birth_date, mascot_skin")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -30,6 +30,7 @@ export default async function ProfilePage({
         email={user.email ?? ""}
         initialFullName={profile?.full_name ?? ""}
         initialBirthDate={profile?.birth_date ?? ""}
+        initialMascotSkin={profile?.mascot_skin ?? "classic"}
         setup={params.setup === "1"}
       />
     </div>

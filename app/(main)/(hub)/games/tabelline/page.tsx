@@ -57,10 +57,10 @@ export default function TabellineSetupPage() {
         </div>
 
         <h1 className="mt-4 text-center font-display text-2xl font-extrabold tracking-tight text-kid-ink sm:mt-6 sm:text-3xl">
-          Impara le Tabelline
+          Sfida Tabelline
         </h1>
         <p className="mx-auto mt-2 max-w-md text-center text-sm leading-snug text-kid-ink-muted sm:text-base">
-          Scegli su quali tabelline vuoi allenarti.
+          Scegli le tabelline del round e prova a fare il tuo record.
         </p>
 
         <div className="mt-5 flex w-full shrink-0 flex-row flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:mt-6">

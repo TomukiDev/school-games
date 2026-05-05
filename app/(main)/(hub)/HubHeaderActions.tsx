@@ -43,6 +43,14 @@ function TrophyIcon() {
   );
 }
 
+function MedalIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" aria-hidden>
+      <path d="M6.75 2.25a.75.75 0 0 0-.62 1.17l2.86 4.1a6.72 6.72 0 0 0-2.74 5.35 6.75 6.75 0 1 0 13.5 0c0-2.2-1.05-4.16-2.67-5.4l2.8-4.05a.75.75 0 0 0-.62-1.17h-2.5a.75.75 0 0 0-.64.36L12 6.19 9.89 2.61a.75.75 0 0 0-.64-.36h-2.5ZM12 10.5a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 0 1 0-4.5Z" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg
@@ -67,6 +75,9 @@ export default function HubHeaderActions() {
     <div className="flex items-center justify-end gap-2">
       <Link href="/rankings" className={iconBtnClass} aria-label="Miei punteggi">
         <TrophyIcon />
+      </Link>
+      <Link href="/achievements" className={iconBtnClass} aria-label="Le mie medaglie">
+        <MedalIcon />
       </Link>
       <Link href="/profile" className={iconBtnClass} aria-label="Apri profilo">
         <ProfileCircleIcon />
